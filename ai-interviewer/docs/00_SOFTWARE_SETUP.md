@@ -642,15 +642,126 @@ vercel login
 
 ---
 
-## 13. GitHub Setup
+## 13. Claude Code Setup
 
-### Step 13.1: Create GitHub Account (if needed)
+Claude Code is Anthropic's agentic coding assistant that runs in your terminal.
+
+### Step 13.1: Install Claude Code
+
+**Method 1: npm (Recommended)**
+```bash
+# Install Claude Code globally
+npm install -g @anthropic-ai/claude-code
+
+# Verify installation
+claude --version
+```
+
+**Method 2: If npm method doesn't work**
+```bash
+# Try the direct installer
+# Visit: https://docs.anthropic.com/en/docs/claude-code
+# Download the Windows installer and run it
+
+# After installation, restart Git Bash and verify:
+claude --version
+```
+
+**Method 3: Using npx (no installation)**
+```bash
+# Run without installing globally
+npx @anthropic-ai/claude-code
+```
+
+### Step 13.2: First Run & Authentication
+
+```bash
+# Navigate to any project folder
+cd ~/Projects
+
+# Start Claude Code
+claude
+
+# On first run:
+# 1. A browser window will open automatically
+# 2. Log in to your Anthropic account (or create one at console.anthropic.com)
+# 3. You need Claude Max subscription ($100/mo) OR API credits
+# 4. Authorize Claude Code
+# 5. Return to terminal - you'll see the Claude Code prompt
+```
+
+### Step 13.3: Verify It Works
+
+```bash
+# Start Claude Code
+claude
+
+# You should see:
+# ╭─────────────────────────────────────────╮
+# │ Claude Code                             │
+# │ Type your message or /help for commands │
+# ╰─────────────────────────────────────────╯
+
+# Type "hello" to test
+# Type /exit to quit
+```
+
+### Troubleshooting Claude Code
+
+**"command not found" after npm install:**
+```bash
+# Check npm global bin location
+npm config get prefix
+
+# The output might be something like:
+# C:\Users\YourName\AppData\Roaming\npm
+
+# Make sure this path is in your Windows PATH:
+# 1. Windows Search → "Environment Variables"
+# 2. Edit PATH under User variables
+# 3. Add: C:\Users\YourName\AppData\Roaming\npm
+# 4. Restart Git Bash
+
+# Alternative: Use npx instead
+npx @anthropic-ai/claude-code
+```
+
+**npm install fails with permission errors:**
+```bash
+# Try with --force flag
+npm install -g @anthropic-ai/claude-code --force
+
+# Or fix npm permissions
+npm config set prefix ~/npm-global
+export PATH=~/npm-global/bin:$PATH
+npm install -g @anthropic-ai/claude-code
+```
+
+**Authentication issues:**
+1. You need an Anthropic account: https://console.anthropic.com
+2. Claude Code requires either:
+   - Claude Max subscription ($100/month with 5x usage)
+   - Claude Pro subscription ($20/month)
+   - API credits in your account
+3. Check your subscription: https://claude.ai/settings/subscription
+
+**Using Claude Code:**
+- Start: `claude` in your project directory
+- Exit: `/exit` or Ctrl+D
+- Help: `/help` for all commands
+- Clear: `/clear` to reset conversation
+
+---
+
+## 14. GitHub Setup
+
+### Step 14.1: Create GitHub Account (if needed)
 
 1. Go to: https://github.com/
 2. Sign up with email
 3. Verify email
 
-### Step 13.2: Create Repository
+### Step 14.2: Create Repository
 
 1. Click "+" → "New repository"
 2. Repository name: `ai-mock-interviewer`
@@ -659,7 +770,7 @@ vercel login
 5. **DO NOT** initialize with README
 6. Click "Create repository"
 
-### Step 13.3: Clone Repository
+### Step 14.3: Clone Repository
 
 ```bash
 # Clone via SSH
@@ -671,7 +782,7 @@ cd ai-mock-interviewer
 
 ---
 
-## 14. Verification Checklist
+## 15. Verification Checklist
 
 Run this verification in **Git Bash**:
 
@@ -710,6 +821,10 @@ aws --version
 echo ""
 echo "=== Vercel CLI ===" 
 vercel --version
+
+echo ""
+echo "=== Claude Code ===" 
+claude --version
 
 echo ""
 echo "=== VS Code ===" 
