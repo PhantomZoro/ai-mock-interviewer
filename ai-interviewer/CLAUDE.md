@@ -1,62 +1,161 @@
 # AI Mock Interviewer
 
-## MANDATORY WORKFLOW - READ FIRST!
+## MANDATORY WORKFLOW - READ THIS FIRST!
 
-**STOP! Before doing ANY work, you MUST follow this workflow:**
+### CRITICAL: Session Initialization
+**Before doing ANY work in a new terminal session:**
 
-### Starting a Session
+1. **READ the workflow files first:**
+   - Read ALL files in `.claude/commands/` to understand available commands
+   - Read ALL files in `.claude/agents/` to understand available agents
+   - This is NON-NEGOTIABLE for every new session
+
+2. **EXPLICITLY invoke commands** - Do NOT just follow the workflow conceptually. You MUST literally invoke each slash command by name using the Skill tool.
+
+---
+
+## EXPLICIT COMMAND INVOCATION (MANDATORY)
+
+**Every task MUST follow this exact sequence with EXPLICIT command invocations:**
+
+### Step 1: Start Session (ALWAYS FIRST)
 ```
 /start-session
 ```
-This will show available tasks from beads. Pick one and update its status.
+**You MUST invoke this command explicitly** at the beginning of every work session. This shows available tasks from beads and orients you to the project state.
 
-### For New Features/Tasks
+### Step 2: Begin Work (CHOOSE ONE)
+
+**For New Features:**
 ```
 /new-feature <task-name>
 ```
-This command will:
-1. Enter plan mode (NO CODE YET!)
-2. Research the codebase
-3. Create detailed plan
-4. **Run plan-reviewer agent** to review the plan
-5. Create beads issues with `bd create`
-6. Wait for user approval before implementing
+**You MUST invoke this command explicitly.** This command:
+1. Enters plan mode (NO CODE until plan is approved!)
+2. Researches the codebase thoroughly
+3. Creates a detailed implementation plan
+4. **Runs plan-reviewer agent** to review the plan
+5. Creates beads issue with `bd create`
+6. Waits for user approval before ANY implementation
 
-### For Bug Fixes
+**For Bug Fixes:**
 ```
 /fix-issue <beads-id>
 ```
+**You MUST invoke this command explicitly.**
 
-### Before ANY Commit
+### Step 3: Code Review (BEFORE ANY COMMIT)
 ```
 /code-review
 ```
-This runs the **code-reviewer agent** on your changes.
+**You MUST invoke this command explicitly** before creating any commit. This runs the **code-reviewer agent** which checks for bugs, security issues, and code quality problems.
 
-### Ending a Session
+### Step 4: End Session (ALWAYS LAST)
 ```
 /land-the-plane
 ```
-Runs quality gates, updates beads, commits.
+**You MUST invoke this command explicitly** at the end of every work session. This:
+- Runs all quality gates (lint, typecheck, test)
+- Updates beads with completion notes
+- Creates commit with proper message
+- Pushes to remote
+- Provides session summary
 
-### Available Slash Commands
-| Command | Purpose |
-|---------|---------|
-| `/start-session` | Begin work, see tasks |
-| `/new-feature X` | Plan new feature with review |
-| `/fix-issue <id>` | Fix a beads issue |
-| `/code-review` | Review changes before commit |
-| `/land-the-plane` | End session properly |
+---
 
-### Sub-Agents (use via Task tool)
-| Agent | When to Use |
-|-------|-------------|
-| **plan-reviewer** | BEFORE coding - reviews architectural plans |
-| **code-reviewer** | BEFORE commit - reviews code for bugs/security |
-| **test-writer** | Generate tests for features |
-| **security-auditor** | Security review |
+## AGENT USAGE (MANDATORY)
 
-**The workflow files are in `.claude/commands/` and `.claude/agents/` - READ THEM!**
+| Agent | When to Use | Invocation |
+|-------|-------------|------------|
+| **plan-reviewer** | BEFORE any coding starts | Via `/new-feature` or Task tool |
+| **code-reviewer** | BEFORE any commit | Via `/code-review` or Task tool |
+| **test-writer** | After implementing features | Via Task tool |
+| **security-auditor** | For security-sensitive code | Via Task tool |
+
+**plan-reviewer and code-reviewer are MANDATORY, not optional!**
+
+---
+
+## WORKFLOW DIAGRAM
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    NEW SESSION STARTED                       │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│  1. Read .claude/commands/ and .claude/agents/ files        │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│  2. INVOKE: /start-session                                  │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│  3. INVOKE: /new-feature OR /fix-issue                      │
+│     → plan-reviewer agent runs automatically                │
+│     → Wait for user approval                                │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│  4. Implement code (only AFTER plan approval)               │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│  5. INVOKE: /code-review                                    │
+│     → code-reviewer agent runs                              │
+│     → Fix any issues found                                  │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│  6. INVOKE: /land-the-plane                                 │
+│     → Quality gates → Beads update → Commit → Push          │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## USER PREFERENCES (ADAPT TO THESE)
+
+This section captures the user's working style. Claude should adapt to these preferences:
+
+### Workflow Style
+- **Structured, documented processes** - Every task should be planned and tracked
+- **Explicit command invocation** - User wants to see each command invoked, not just followed implicitly
+- **Beads issue tracking** - All work should be tracked in `.beads/issues.jsonl`
+- **Plan before code** - Always use plan mode and plan-reviewer before any implementation
+- **Review before commit** - Always run code-reviewer before any commit
+
+### Communication Style
+- **Clear progress updates** - Show what step you're on in the workflow
+- **Acknowledge command invocations** - When invoking a command, state it clearly
+- **Document decisions** - Add notes to beads issues explaining what was done and why
+
+### Quality Expectations
+- **No shortcuts** - Follow the full workflow even for "simple" tasks
+- **Use all available tools** - Agents, commands, and beads are there to be used
+- **TypeScript strict mode** - No `any` types, no implicit any
+- **Tests and linting** - Must pass before any commit
+
+---
+
+## SELF-UPDATING INSTRUCTIONS
+
+**IMPORTANT: This CLAUDE.md file should evolve based on user feedback.**
+
+When the user:
+- Corrects your workflow approach → Update the MANDATORY WORKFLOW section
+- Expresses preferences about how to work → Update the USER PREFERENCES section
+- Identifies missing instructions → Add them to the appropriate section
+- Provides feedback on communication style → Update accordingly
+
+**After receiving user feedback about workflow or preferences, consider whether CLAUDE.md needs updating to prevent the same issue in future sessions.**
 
 ---
 
@@ -206,23 +305,43 @@ git add .beads/issues.jsonl               # Include in commit
 5. Push to remote
 
 ## Sub-Agents Available
-- **plan-reviewer**: Reviews architectural plans before coding
-- **code-reviewer**: Reviews code for bugs, security, style
+
+**MANDATORY agents (must use every task):**
+- **plan-reviewer**: Reviews architectural plans BEFORE any coding begins
+- **code-reviewer**: Reviews code for bugs, security, style BEFORE any commit
+
+**Optional agents (use as needed):**
 - **test-writer**: Generates comprehensive tests
 - **security-auditor**: Checks for vulnerabilities
 - **explore**: Fast read-only codebase exploration
 
+**Agent files are in `.claude/agents/` - READ THEM at session start!**
+
 ## Important Rules
 
+### AT SESSION START (NON-NEGOTIABLE)
+1. Read ALL files in `.claude/commands/`
+2. Read ALL files in `.claude/agents/`
+3. Explicitly invoke `/start-session`
+4. Review beads for current project state
+
 ### ALWAYS
-- Use plan mode first for new features
-- Run code-reviewer before committing
-- Keep context under 50% (check with /cost)
+- **EXPLICITLY invoke each slash command** - Don't just follow conceptually
+- **Run /start-session** at beginning of every session
+- **Run /new-feature or /fix-issue** to begin any task
+- **Run /code-review** before ANY commit (uses code-reviewer agent)
+- **Run /land-the-plane** at end of every session
+- Use plan mode and **plan-reviewer agent** before coding new features
 - Update beads when starting/finishing tasks
 - Include `.beads/issues.jsonl` in commits
+- Keep context under 50% (check with /cost)
 
 ### NEVER
-- Commit with failing tests
+- Skip explicit command invocation (don't just follow workflow mentally)
+- Start coding before plan-reviewer has approved the plan
+- Commit without running code-reviewer first
+- End session without running /land-the-plane
+- Commit with failing tests or lint errors
 - Use `any` type in TypeScript
 - Expose sensitive data in logs or responses
 - Skip input validation
