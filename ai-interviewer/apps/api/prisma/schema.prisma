@@ -1,0 +1,51 @@
+// Prisma Schema for AI Mock Interviewer
+// https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// =============================================================================
+// USER MODELS
+// =============================================================================
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String
+  avatarUrl String?  @map("avatar_url")
+  googleId  String   @unique @map("google_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  profile UserProfile?
+
+  @@index([email])
+  @@index([googleId])
+  @@map("users")
+}
+
+model UserProfile {
+  id                String   @id @default(uuid())
+  userId            String   @unique @map("user_id")
+  experienceYears   Int?     @map("experience_years")
+  targetRole        String?  @map("target_role")
+  targetCompany     String?  @map("target_company")
+  preferredLanguage String   @default("javascript") @map("preferred_language")
+  skills            String[] @default([])
+  weakTopics        String[] @default([]) @map("weak_topics")
+  strongTopics      String[] @default([]) @map("strong_topics")
+  resumeUrl         String?  @map("resume_url")
+  resumeParsed      Json?    @map("resume_parsed")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_profiles")
+}
