@@ -1,5 +1,65 @@
 # AI Mock Interviewer
 
+## MANDATORY WORKFLOW - READ FIRST!
+
+**STOP! Before doing ANY work, you MUST follow this workflow:**
+
+### Starting a Session
+```
+/start-session
+```
+This will show available tasks from beads. Pick one and update its status.
+
+### For New Features/Tasks
+```
+/new-feature <task-name>
+```
+This command will:
+1. Enter plan mode (NO CODE YET!)
+2. Research the codebase
+3. Create detailed plan
+4. **Run plan-reviewer agent** to review the plan
+5. Create beads issues with `bd create`
+6. Wait for user approval before implementing
+
+### For Bug Fixes
+```
+/fix-issue <beads-id>
+```
+
+### Before ANY Commit
+```
+/code-review
+```
+This runs the **code-reviewer agent** on your changes.
+
+### Ending a Session
+```
+/land-the-plane
+```
+Runs quality gates, updates beads, commits.
+
+### Available Slash Commands
+| Command | Purpose |
+|---------|---------|
+| `/start-session` | Begin work, see tasks |
+| `/new-feature X` | Plan new feature with review |
+| `/fix-issue <id>` | Fix a beads issue |
+| `/code-review` | Review changes before commit |
+| `/land-the-plane` | End session properly |
+
+### Sub-Agents (use via Task tool)
+| Agent | When to Use |
+|-------|-------------|
+| **plan-reviewer** | BEFORE coding - reviews architectural plans |
+| **code-reviewer** | BEFORE commit - reviews code for bugs/security |
+| **test-writer** | Generate tests for features |
+| **security-auditor** | Security review |
+
+**The workflow files are in `.claude/commands/` and `.claude/agents/` - READ THEM!**
+
+---
+
 ## Project Overview
 AI-powered mock interview platform for DSA and System Design practice.
 Built with React, Node.js, PostgreSQL, Redis, and Groq AI.
